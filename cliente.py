@@ -123,15 +123,27 @@ class Aplicacion:
             option_value = int(self.option_var.get())
             text_detection_value = int(self.text_detection_var.get())
             try:
-                print("Entro")
-                response = requests.post(url, 
-                                        files={'video': ('video.jpg', img_encoded.tostring(), 'image/jpeg')},
+                print("Enviando solicitud al servidor...")
+                response = requests.post(url, files={'video': ('video.jpg', img_encoded.tostring(), 'image/jpeg')},
                                         data={'option': option_value, 'text_detection': text_detection_value})
-                print(response)
-            except requests.exceptions.RequestException:
+                print("Respuesta del servidor:", response)
+                response.raise_for_status()  # Esto generará una excepción si la solicitud falla
+            except requests.exceptions.RequestException as e:
+                print("Error al enviar la solicitud:", e)
                 if not self.popup_exist:
                     self.popup_exist = True
-                    self.mostrar_mensaje_emergente("Esperando conexión con servidor...")
+                    self.mostrar_mensaje_emergente("Error al enviar la solicitud al servidor.")
+                continue
+
+            # Verificar si la respuesta es válida
+            if response.status_code == 200:
+                print("Respuesta recibida del servidor.")
+                # Continuar procesando la respuesta...
+            else:
+                print("Error: Respuesta inesperada del servidor:", response.status_code)
+                if not self.popup_exist:
+                    self.popup_exist = True
+                    self.mostrar_mensaje_emergente("Respuesta inesperada del servidor: {}".format(response.status_code))
                 continue
 
             # Mostrar el video procesado en la interfaz

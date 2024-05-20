@@ -6,6 +6,7 @@ import numpy as np
 import cv2
 import pytesseract
 import os
+from yolov5.models.experimental import attempt_load
 
 app = Flask(__name__)
 
@@ -13,7 +14,17 @@ tesseract_dir = os.path.join(os.path.dirname(__file__), 'tesseract')
 pytesseract.pytesseract.tesseract_cmd = os.path.join(tesseract_dir, 'tesseract.exe')
 
 # Cargar el modelo YOLOv5
-model = torch.hub.load('ultralytics/yolov5', 'custom', path='./best.pt')
+# model = torch.hub.load('ultralytics/yolov5', 'custom', path='./best.pt')
+
+
+# Ruta al archivo del modelo
+model_path = './best.pt'
+
+# Cargar el modelo usando torch.load
+# state_dict = torch.load(model_path, map_location=torch.device('cpu'))
+
+# Intentar cargar el modelo
+model = attempt_load(model_path)
 transform = transforms.Compose([
     transforms.Resize((416, 416)),
     transforms.ToTensor(),
@@ -45,8 +56,8 @@ def detect_objects():
     results = model(input_image)
 
     # Obtener las detecciones
-    predictions = results.cpu().numpy()[0]
-
+    # predictions = results.cpu().numpy()[0]
+    predictions = results[0].cpu().numpy()[0]
     # Procesar detecciones
     boxes = []
     confidences = []
@@ -55,7 +66,6 @@ def detect_objects():
     if predictions.size > 0:  # Verificar si hay detecciones
         for box in predictions:
             cx, cy, h, v, conf, *class_probs = box
-
             x1 = int(cx - (h/2))
             y1 = int(cy - (v/2))
             x2 = int(cx + (h/2))

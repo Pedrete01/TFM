@@ -105,7 +105,7 @@ class Aplicacion:
     # Función para enviar el video en vivo y procesado
     def enviar_video_en_vivo(self):
         cap = cv2.VideoCapture(0)
-        url = 'http://127.0.0.1:5000/detect'
+        url = 'https://tfm-719t.onrender.com/detect'
 
         cam_connected = False
 
@@ -122,11 +122,12 @@ class Aplicacion:
 
             option_value = int(self.option_var.get())
             text_detection_value = int(self.text_detection_var.get())
-
             try:
+                print("Entro")
                 response = requests.post(url, 
                                         files={'video': ('video.jpg', img_encoded.tostring(), 'image/jpeg')},
                                         data={'option': option_value, 'text_detection': text_detection_value})
+                print(response)
             except requests.exceptions.RequestException:
                 if not self.popup_exist:
                     self.popup_exist = True

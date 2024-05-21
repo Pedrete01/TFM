@@ -22,13 +22,20 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgl1-mesa-glx libglib2.0-0
+          
       - name: Create and start virtual environment
         run: |
           python -m venv venv
           source venv/bin/activate
       
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          source venv/bin/activate
+          pip install -r requirements.txt
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
 
@@ -75,7 +82,4 @@ jobs:
         with:
           app-name: 'apideteccion'
           slot-name: 'Production'
-
-      - name: Install dependencies 2
-        run: apt-get update && apt-get install -y libgl1-mesa-glx libglib2.0-0
           

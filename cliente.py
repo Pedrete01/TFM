@@ -105,7 +105,7 @@ class Aplicacion:
     # Función para enviar el video en vivo y procesado
     def enviar_video_en_vivo(self):
         cap = cv2.VideoCapture(0)
-        url = 'https://tfm-719t.onrender.com/detect'
+        url = 'https://apideteccion.azurewebsites.net/detect'
 
         cam_connected = False
 

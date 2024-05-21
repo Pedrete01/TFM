@@ -22,7 +22,7 @@ transform = transforms.Compose([
     transforms.ToTensor(),
 ])
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def hello_world():
     return '¡Hola! Esta es una prueba de funcionamiento.'
 
